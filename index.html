@@ -39,11 +39,17 @@
     .card-testdate { background:#fff0f5; }   .card-testdate .card-input { background:#ffe0eb; }
     .card-operator { background:#f0f4f8; }   .card-operator .card-input { background:#e2e8f0; }
 
+    .header-inputs-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
     .products-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(5, 1fr);
       gap: 16px;
-      margin-top: 10px;
+      margin-top: 0;
     }
     .product-block {
       border-radius: 16px;
@@ -264,110 +270,106 @@
 
     <h2>New Test</h2>
 
-    <div class="top-inputs">
-      <div class="column">
-        <div class="input-card card-report">
-          <div class="card-title">Report Number</div>
-          <div class="card-subtitle">Auto-generated sequence</div>
-          <input type="text" id="reportNumber" class="card-input" readonly value="Loading...">
+    <div class="header-inputs-row">
+      <div class="input-card card-report">
+        <div class="card-title">Report Number</div>
+        <div class="card-subtitle">Auto-generated sequence</div>
+        <input type="text" id="reportNumber" class="card-input" readonly value="Loading...">
+      </div>
+
+      <div class="input-card card-testdate">
+        <div class="card-title">Test Date</div>
+        <input type="date" id="testDate" class="card-input">
+      </div>
+
+      <div class="input-card card-operator">
+        <div class="card-title">Operator Name</div>
+        <input type="text" id="operatorName" class="card-input" placeholder="e.g., John Doe" required>
+      </div>
+    </div>
+
+    <div class="products-grid">
+      <div class="product-block product-qtip">
+        <div class="product-header">
+          <span class="product-name">Q tip</span>
         </div>
-
-        <div class="products-grid">
-          <div class="product-block product-qtip">
-            <div class="product-header">
-              <span class="product-name">Q tip</span>
-            </div>
-            <div class="product-inputs">
-              <div class="product-input-group">
-                <label for="t_qtip">Target (g/m)</label>
-                <input id="t_qtip" type="number" step="0.01" class="card-input" placeholder="e.g., 6.50">
-              </div>
-              <div class="product-input-group">
-                <label for="r_qtip">Acceptable Range (%)</label>
-                <input id="r_qtip" type="number" min="0.5" max="20" step="0.1" value="5.0" class="card-input" placeholder="5.0">
-              </div>
-            </div>
+        <div class="product-inputs">
+          <div class="product-input-group">
+            <label for="t_qtip">Target (g/m)</label>
+            <input id="t_qtip" type="number" step="0.01" class="card-input" placeholder="e.g., 6.50">
           </div>
-
-          <div class="product-block product-triple">
-            <div class="product-header">
-              <span class="product-name">Triple</span>
-            </div>
-            <div class="product-inputs">
-              <div class="product-input-group">
-                <label for="t_triple">Target (g/m)</label>
-                <input id="t_triple" type="number" step="0.01" class="card-input" placeholder="e.g., 12.50">
-              </div>
-              <div class="product-input-group">
-                <label for="r_triple">Acceptable Range (%)</label>
-                <input id="r_triple" type="number" min="0.5" max="20" step="0.1" value="5.0" class="card-input" placeholder="5.0">
-              </div>
-            </div>
-          </div>
-
-          <div class="product-block product-organic">
-            <div class="product-header">
-              <span class="product-name">Organic</span>
-            </div>
-            <div class="product-inputs">
-              <div class="product-input-group">
-                <label for="t_organic">Target (g/m)</label>
-                <input id="t_organic" type="number" step="0.01" class="card-input" placeholder="e.g., 4.50">
-              </div>
-              <div class="product-input-group">
-                <label for="r_organic">Acceptable Range (%)</label>
-                <input id="r_organic" type="number" min="0.5" max="20" step="0.1" value="5.0" class="card-input" placeholder="5.0">
-              </div>
-            </div>
-          </div>
-
-          <div class="product-block product-special">
-            <div class="product-header">
-              <span class="product-name">Special</span>
-            </div>
-            <div class="product-inputs">
-              <div class="product-input-group">
-                <label for="t_special">Target (g/m)</label>
-                <input id="t_special" type="number" step="0.01" class="card-input" placeholder="e.g., 4.50">
-              </div>
-              <div class="product-input-group">
-                <label for="r_special">Acceptable Range (%)</label>
-                <input id="r_special" type="number" min="0.5" max="20" step="0.1" value="5.0" class="card-input" placeholder="5.0">
-              </div>
-            </div>
-          </div>
-
-          <div class="product-block product-custom">
-            <div class="product-header">
-              <span class="product-name">Custom Product</span>
-            </div>
-            <div class="product-inputs">
-              <div class="product-input-group">
-                <label for="t_custom_name">Product Name</label>
-                <input id="t_custom_name" type="text" class="card-input" placeholder="Enter product name">
-              </div>
-              <div class="product-input-group">
-                <label for="t_custom">Target (g/m)</label>
-                <input id="t_custom" type="number" step="0.01" class="card-input" placeholder="e.g., 4.50">
-              </div>
-              <div class="product-input-group">
-                <label for="r_custom">Acceptable Range (%)</label>
-                <input id="r_custom" type="number" min="0.5" max="20" step="0.1" value="5.0" class="card-input" placeholder="5.0">
-              </div>
-            </div>
+          <div class="product-input-group">
+            <label for="r_qtip">Acceptable Range (%)</label>
+            <input id="r_qtip" type="number" min="0.5" max="20" step="0.1" value="5.0" class="card-input" placeholder="5.0">
           </div>
         </div>
       </div>
 
-      <div class="column">
-        <div class="input-card card-testdate">
-          <div class="card-title">Test Date</div>
-          <input type="date" id="testDate" class="card-input">
+      <div class="product-block product-triple">
+        <div class="product-header">
+          <span class="product-name">Triple</span>
         </div>
+        <div class="product-inputs">
+          <div class="product-input-group">
+            <label for="t_triple">Target (g/m)</label>
+            <input id="t_triple" type="number" step="0.01" class="card-input" placeholder="e.g., 12.50">
+          </div>
+          <div class="product-input-group">
+            <label for="r_triple">Acceptable Range (%)</label>
+            <input id="r_triple" type="number" min="0.5" max="20" step="0.1" value="5.0" class="card-input" placeholder="5.0">
+          </div>
+        </div>
+      </div>
 
-        <div class="input-card card-operator">
-          <div class="card-title">Operator Name</div>
-          <input type="text" id="operatorName" class="card-input" placeholder="e.g., John Doe" required>
+      <div class="product-block product-organic">
+        <div class="product-header">
+          <span class="product-name">Organic</span>
+        </div>
+        <div class="product-inputs">
+          <div class="product-input-group">
+            <label for="t_organic">Target (g/m)</label>
+            <input id="t_organic" type="number" step="0.01" class="card-input" placeholder="e.g., 4.50">
+          </div>
+          <div class="product-input-group">
+            <label for="r_organic">Acceptable Range (%)</label>
+            <input id="r_organic" type="number" min="0.5" max="20" step="0.1" value="5.0" class="card-input" placeholder="5.0">
+          </div>
+        </div>
+      </div>
+
+      <div class="product-block product-special">
+        <div class="product-header">
+          <span class="product-name">Special</span>
+        </div>
+        <div class="product-inputs">
+          <div class="product-input-group">
+            <label for="t_special">Target (g/m)</label>
+            <input id="t_special" type="number" step="0.01" class="card-input" placeholder="e.g., 4.50">
+          </div>
+          <div class="product-input-group">
+            <label for="r_special">Acceptable Range (%)</label>
+            <input id="r_special" type="number" min="0.5" max="20" step="0.1" value="5.0" class="card-input" placeholder="5.0">
+          </div>
+        </div>
+      </div>
+
+      <div class="product-block product-custom">
+        <div class="product-header">
+          <span class="product-name">Custom Product</span>
+        </div>
+        <div class="product-inputs">
+          <div class="product-input-group">
+            <label for="t_custom_name">Product Name</label>
+            <input id="t_custom_name" type="text" class="card-input" placeholder="Enter product name">
+          </div>
+          <div class="product-input-group">
+            <label for="t_custom">Target (g/m)</label>
+            <input id="t_custom" type="number" step="0.01" class="card-input" placeholder="e.g., 4.50">
+          </div>
+          <div class="product-input-group">
+            <label for="r_custom">Acceptable Range (%)</label>
+            <input id="r_custom" type="number" min="0.5" max="20" step="0.1" value="5.0" class="card-input" placeholder="5.0">
+          </div>
         </div>
       </div>
     </div>
