@@ -770,7 +770,9 @@
 
       <div class="input-card card-operator">
         <div class="card-title">Operator Name</div>
-        <input type="text" id="operatorName" class="card-input" placeholder="e.g., John Doe" required>
+        <input type="text" id="operatorName" class="card-input" placeholder="e.g., John Doe" list="operatorList"
+          required>
+        <datalist id="operatorList"></datalist>
       </div>
     </div>
 
@@ -1452,11 +1454,52 @@
     }
 
     // -----------------------------
+    // Operator Persistence
+    // -----------------------------
+    function loadOperatorHistory() {
+      try {
+        const history = JSON.parse(localStorage.getItem('sliverOperatorHistory') || '[]');
+        const lastOp = localStorage.getItem('sliverLastOperator');
+
+        const dataList = document.getElementById('operatorList');
+        if (dataList) {
+          dataList.innerHTML = history.map(name => `<option value="${escapeHtml(name)}">`).join('');
+        }
+
+        if (lastOp) {
+          document.getElementById('operatorName').value = lastOp;
+        }
+      } catch (_) { }
+    }
+
+    function saveOperator(name) {
+      if (!name) return;
+      try {
+        localStorage.setItem('sliverLastOperator', name);
+
+        let history = JSON.parse(localStorage.getItem('sliverOperatorHistory') || '[]');
+        if (!history.includes(name)) {
+          history.push(name);
+          // keep history reasonable size? e.g. 50
+          if (history.length > 50) history.shift();
+          localStorage.setItem('sliverOperatorHistory', JSON.stringify(history));
+
+          // update datalist immediately
+          const dataList = document.getElementById('operatorList');
+          if (dataList) {
+            dataList.innerHTML = history.map(n => `<option value="${escapeHtml(n)}">`).join('');
+          }
+        }
+      } catch (_) { }
+    }
+
+    // -----------------------------
     // Init
     // -----------------------------
     window.onload = function () {
       try {
         loadProductConfigs(); // Load saved targets & card ranges
+        loadOperatorHistory(); // Load operator defaults
 
         // Attach change listeners to auto-save
         PRODUCT_INPUT_IDS.forEach(id => {
@@ -1595,6 +1638,7 @@
         alert('Please fill in Operator Name and Test Date.');
         return false;
       }
+      saveOperator(operatorName); // Save on successful validation
       return true;
     }
 
@@ -1704,7 +1748,11 @@
       document.getElementById('r_special').value = '5.0';
       document.getElementById('r_custom').value = '5.0';
 
-      // Reset operator name
+      // Reset operator name (do NOT reset if we want persistent default, but "Start New Test" implies fresh canvas)
+      // Requirement: "last entered operator name should come as default when the page loaded next time"
+      // Usually "Start New Test" clears everything for a fresh start. 
+      // If user wants to keep operator, they can select from dropdown.
+      // Let's clear it, but the autofill happens on page load.
       document.getElementById('operatorName').value = '';
 
       // Reset test date to today
