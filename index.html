@@ -1946,7 +1946,7 @@
       const maxVal = vals.length > 0 ? Math.max(...vals) : null;
 
       // Update display
-      document.getElementById(`avgCell_${cardNo}`).textContent = row.avg === null ? '-' : row.avg.toFixed(3);
+      document.getElementById(`avgCell_${cardNo}`).textContent = row.avg === null ? '-' : row.avg.toFixed(2);
       document.getElementById(`minCell_${cardNo}`).textContent = minVal === null ? '-' : minVal.toFixed(3);
       document.getElementById(`maxCell_${cardNo}`).textContent = maxVal === null ? '-' : maxVal.toFixed(3);
 
@@ -2143,8 +2143,8 @@
           const cardsBg = oocCards > 0 ? '#e74c3c' : '#3498db';
           const coilersBg = oocCoilers > 0 ? '#e74c3c' : '#3498db';
 
-          const cardMin = productStats[p].cardAvgMin !== null ? productStats[p].cardAvgMin.toFixed(3) : '-';
-          const cardMax = productStats[p].cardAvgMax !== null ? productStats[p].cardAvgMax.toFixed(3) : '-';
+          const cardMin = productStats[p].cardAvgMin !== null ? productStats[p].cardAvgMin.toFixed(2) : '-';
+          const cardMax = productStats[p].cardAvgMax !== null ? productStats[p].cardAvgMax.toFixed(2) : '-';
           const coilerMinVal = productStats[p].coilerMin !== null ? productStats[p].coilerMin.toFixed(3) : '-';
           const coilerMaxVal = productStats[p].coilerMax !== null ? productStats[p].coilerMax.toFixed(3) : '-';
 
@@ -2622,8 +2622,8 @@
           const cardsBg = oocCards > 0 ? '#e74c3c' : '#3498db';
           const coilersBg = oocCoilers > 0 ? '#e74c3c' : '#3498db';
 
-          const cardMin = productStats[p].cardAvgMin !== null ? productStats[p].cardAvgMin.toFixed(3) : '-';
-          const cardMax = productStats[p].cardAvgMax !== null ? productStats[p].cardAvgMax.toFixed(3) : '-';
+          const cardMin = productStats[p].cardAvgMin !== null ? productStats[p].cardAvgMin.toFixed(2) : '-';
+          const cardMax = productStats[p].cardAvgMax !== null ? productStats[p].cardAvgMax.toFixed(2) : '-';
           const coilerMinVal = productStats[p].coilerMin !== null ? productStats[p].coilerMin.toFixed(3) : '-';
           const coilerMaxVal = productStats[p].coilerMax !== null ? productStats[p].coilerMax.toFixed(3) : '-';
 
@@ -2736,7 +2736,7 @@
       if (!keys.length) return '-';
       return keys
         .sort((a, b) => a.localeCompare(b))
-        .map(p => `${p}: ${summaryByProduct[p].meanCardAvg.toFixed(3)} (n=${summaryByProduct[p].cards})`)
+        .map(p => `${p}: ${summaryByProduct[p].meanCardAvg.toFixed(2)} (n=${summaryByProduct[p].cards})`)
         .join(' | ');
     }
 
@@ -3455,8 +3455,8 @@
         const cardsBgColor = metrics.oocCards > 0 ? '#e74c3c' : '#3498db';
         const coilersBgColor = metrics.oocCoilers > 0 ? '#e74c3c' : '#3498db';
 
-        const cardMin = g.cardAvgs && g.cardAvgs.length > 0 ? Math.min(...g.cardAvgs).toFixed(3) : '-';
-        const cardMax = g.cardAvgs && g.cardAvgs.length > 0 ? Math.max(...g.cardAvgs).toFixed(3) : '-';
+        const cardMin = g.cardAvgs && g.cardAvgs.length > 0 ? Math.min(...g.cardAvgs).toFixed(2) : '-';
+        const cardMax = g.cardAvgs && g.cardAvgs.length > 0 ? Math.max(...g.cardAvgs).toFixed(2) : '-';
         const coilerMin = g.allValues && g.allValues.length > 0 ? Math.min(...g.allValues).toFixed(3) : '-';
         const coilerMax = g.allValues && g.allValues.length > 0 ? Math.max(...g.allValues).toFixed(3) : '-';
 
@@ -3889,8 +3889,8 @@
         const cardsBgColor = metrics.oocCards > 0 ? '#e74c3c' : '#3498db';
         const coilersBgColor = metrics.oocCoilers > 0 ? '#e74c3c' : '#3498db';
 
-        const cardMin = g.cardAvgs && g.cardAvgs.length > 0 ? Math.min(...g.cardAvgs).toFixed(3) : '-';
-        const cardMax = g.cardAvgs && g.cardAvgs.length > 0 ? Math.max(...g.cardAvgs).toFixed(3) : '-';
+        const cardMin = g.cardAvgs && g.cardAvgs.length > 0 ? Math.min(...g.cardAvgs).toFixed(2) : '-';
+        const cardMax = g.cardAvgs && g.cardAvgs.length > 0 ? Math.max(...g.cardAvgs).toFixed(2) : '-';
         const coilerMin = g.allValues && g.allValues.length > 0 ? Math.min(...g.allValues).toFixed(3) : '-';
         const coilerMax = g.allValues && g.allValues.length > 0 ? Math.max(...g.allValues).toFixed(3) : '-';
 
@@ -3973,9 +3973,9 @@
               <td><strong>${escapeHtml(p)}</strong></td>
               <td>${g.cardAvgs.length}</td>
               <td>${g.allValues.length}</td>
-              <td>${cardMean === null ? '-' : cardMean.toFixed(3)}</td>
-              <td>${cardLim.lcl === null ? '-' : cardLim.lcl.toFixed(3)}</td>
-              <td>${cardLim.ucl === null ? '-' : cardLim.ucl.toFixed(3)}</td>
+              <td>${cardMean === null ? '-' : cardMean.toFixed(2)}</td>
+              <td>${cardLim.lcl === null ? '-' : cardLim.lcl.toFixed(2)}</td>
+              <td>${cardLim.ucl === null ? '-' : cardLim.ucl.toFixed(2)}</td>
               <td>${allMean === null ? '-' : allMean.toFixed(3)}</td>
               <td>${allLim.lcl === null ? '-' : allLim.lcl.toFixed(3)}</td>
               <td>${allLim.ucl === null ? '-' : allLim.ucl.toFixed(3)}</td>
@@ -4384,7 +4384,7 @@
               coilers[1] !== null && isFinite(coilers[1]) ? coilers[1].toFixed(3) : '-',
               coilers[2] !== null && isFinite(coilers[2]) ? coilers[2].toFixed(3) : '-',
               coilers[3] !== null && isFinite(coilers[3]) ? coilers[3].toFixed(3) : '-',
-              row.avg !== null && isFinite(row.avg) ? row.avg.toFixed(3) : '-',
+              row.avg !== null && isFinite(row.avg) ? row.avg.toFixed(2) : '-',
               minVal !== null ? minVal.toFixed(3) : '-',
               maxVal !== null ? maxVal.toFixed(3) : '-'
             ];
