@@ -592,6 +592,71 @@
       font-weight: 600;
     }
 
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .modal-box {
+      background: #fff;
+      padding: 24px;
+      border-radius: 12px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #bf0e0e;
+      /* Warning color */
+    }
+
+    .modal-message {
+      font-size: 15px;
+      color: #334155;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .btn-modal-cancel {
+      background: #e2e8f0;
+      color: #334155;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-modal-confirm {
+      background: #bf0e0e;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
     /* Print: allow multi-page flow - optimized for minimal header space */
     @media print {
       body * {
@@ -1132,31 +1197,43 @@
         </thead>
         <tbody id="savedList"></tbody>
       </table>
+    </div> <!-- End container -->
 
-      <div id="detailsPanel" class="details-panel">
-        <div class="details-header">
-          <div>
-            <div class="details-title" id="detailsTitle">Report Details</div>
-            <div class="details-meta" id="detailsMeta"></div>
-          </div>
-          <div>
-            <button class="btn-muted" onclick="closeDetails()">Close</button>
-            <button class="btn-print" onclick="printDetails()">Print This Report</button>
-          </div>
-        </div>
-
-        <div class="details-charts">
-          <div id="detailsChartsGrid" class="charts-grid"></div>
-        </div>
-
-        <div class="details-table-wrap">
-          <h3 style="margin: 6px 0 10px; color:#0f172a;">Single Values (Shown only in Details)</h3>
-          <div style="overflow:auto;">
-            <table id="detailsTable"></table>
-          </div>
+    <div id="saveConfirmModal" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-title">Warnings Found</div>
+        <div class="modal-message" id="saveConfirmMessage"></div>
+        <div class="modal-actions">
+          <button type="button" class="btn-modal-cancel" id="btnModalCancel">Go Back</button>
+          <button type="button" class="btn-modal-confirm" id="btnModalConfirm">Continue Saving</button>
         </div>
       </div>
     </div>
+
+    <div id="detailsPanel" class="details-panel">
+      <div class="details-header">
+        <div>
+          <div class="details-title" id="detailsTitle">Report Details</div>
+          <div class="details-meta" id="detailsMeta"></div>
+        </div>
+        <div>
+          <button class="btn-muted" onclick="closeDetails()">Close</button>
+          <button class="btn-print" onclick="printDetails()">Print This Report</button>
+        </div>
+      </div>
+
+      <div class="details-charts">
+        <div id="detailsChartsGrid" class="charts-grid"></div>
+      </div>
+
+      <div class="details-table-wrap">
+        <h3 style="margin: 6px 0 10px; color:#0f172a;">Single Values (Shown only in Details)</h3>
+        <div style="overflow:auto;">
+          <table id="detailsTable"></table>
+        </div>
+      </div>
+    </div>
+  </div>
   </div>
 
   <!-- PRINT SECTION -->
@@ -1515,6 +1592,32 @@
 
         const printCurrentBtn = document.getElementById('printCurrentBtn');
         if (printCurrentBtn) printCurrentBtn.addEventListener('click', printCurrent);
+
+        // Modal Listeners
+        const btnModalCancel = document.getElementById('btnModalCancel');
+        const btnModalConfirm = document.getElementById('btnModalConfirm');
+        if (btnModalCancel) {
+          btnModalCancel.addEventListener('click', function () {
+            document.getElementById('saveConfirmModal').style.display = 'none';
+            // Scroll to defect if needed
+            if (currentTest && currentTest.outOfControlCardNos && currentTest.outOfControlCardNos.length > 0) {
+              const firstDefectiveCard = currentTest.outOfControlCardNos[0];
+              const cardRow = document.getElementById(`cardRow_${firstDefectiveCard}`);
+              if (cardRow) {
+                cardRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                cardRow.style.transition = 'background-color 0.3s';
+                cardRow.style.backgroundColor = '#fff3cd';
+                setTimeout(() => { cardRow.style.backgroundColor = ''; }, 2000);
+              }
+            }
+          });
+        }
+        if (btnModalConfirm) {
+          btnModalConfirm.addEventListener('click', function () {
+            document.getElementById('saveConfirmModal').style.display = 'none';
+            finalizeSave();
+          });
+        }
 
         // Attach change listeners to auto-save
         PRODUCT_INPUT_IDS.forEach(id => {
@@ -2706,27 +2809,25 @@
         if ((currentTest.oocCardsAll && currentTest.oocCardsAll > 0) || (currentTest.oocCoilersAll && currentTest.oocCoilersAll > 0)) {
           const cardMsg = currentTest.oocCardsAll > 0 ? `${currentTest.oocCardsAll} card(s) out of range. ` : '';
           const coilerMsg = currentTest.oocCoilersAll > 0 ? `${currentTest.oocCoilersAll} coiler reading(s) out of range.` : '';
-          const message = `Warning: ${cardMsg}${coilerMsg}\n\nDo you want to continue saving?`;
+          const message = `${cardMsg}${coilerMsg}<br><br>Do you want to continue saving?`;
 
-          if (!confirm(message)) {
-            // User clicked No - scroll to first defective card
-            if (currentTest.outOfControlCardNos && currentTest.outOfControlCardNos.length > 0) {
-              const firstDefectiveCard = currentTest.outOfControlCardNos[0];
-              const cardRow = document.getElementById(`cardRow_${firstDefectiveCard}`);
-              if (cardRow) {
-                cardRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                // Highlight briefly
-                cardRow.style.transition = 'background-color 0.3s';
-                cardRow.style.backgroundColor = '#fff3cd';
-                setTimeout(() => {
-                  cardRow.style.backgroundColor = '';
-                }, 2000);
-              }
-            }
-            return;
-          }
+          // Show Custom Modal
+          document.getElementById('saveConfirmMessage').innerHTML = message;
+          document.getElementById('saveConfirmModal').style.display = 'flex';
+          return; // Stop here, wait for modal
         }
 
+        // If no warnings, save immediately
+        finalizeSave();
+
+      } catch (e) {
+        alert("Error initiating save: " + e.message);
+        console.error(e);
+      }
+    }
+
+    function finalizeSave() {
+      try {
         const saved = getSavedTests();
         saved.push(currentTest);
         setSavedTests(saved);
