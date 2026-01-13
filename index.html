@@ -742,18 +742,26 @@
       #printMetrics {
         margin: 4px 0 !important;
         gap: 4px !important;
-        flex-wrap: wrap !important;
+        flex-wrap: nowrap !important;
+        /* Force single row */
+        display: flex !important;
+        align-items: stretch !important;
       }
 
       .print-metric {
-        padding: 4px 8px !important;
+        padding: 4px 6px !important;
         border-radius: 4px !important;
-        min-width: 140px !important;
+        border: 1px solid #ccc !important;
+        background: #f1f5f9 !important;
+        min-width: 0 !important;
+        /* Allow shrinking */
+        flex: 1 1 0px !important;
+        /* Distribute evenly */
         text-align: center !important;
-        color: white !important;
+        color: #333 !important;
+        /* Changed from white to a darker color for contrast on light background */
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
-        background-color: #3498db !important;
       }
 
       .print-metric .label {
