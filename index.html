@@ -2915,10 +2915,9 @@
         if (dateRangeType === 'custom') {
           const fromInput = tabIndex === 0 ? document.getElementById('filterDateFrom') : document.getElementById('combinedDateFrom');
           const toInput = tabIndex === 0 ? document.getElementById('filterDateTo') : document.getElementById('combinedDateTo');
-          if (fromInput.value) dateFrom = new Date(fromInput.value);
+          if (fromInput.value) dateFrom = new Date(fromInput.value + 'T00:00:00');
           if (toInput.value) {
-            dateTo = new Date(toInput.value);
-            dateTo.setHours(23, 59, 59, 999);
+            dateTo = new Date(toInput.value + 'T23:59:59.999');
           }
         } else {
           const range = getDateRange(dateRangeType);
