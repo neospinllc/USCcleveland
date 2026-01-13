@@ -2531,6 +2531,7 @@
 
         const summaryByProduct = {};
         const productStats = {};
+        const outOfControlCardNos = [];
 
         // OOC computations are per product, using per-product ranges
         for (const p of productsPresent) {
@@ -2560,6 +2561,7 @@
               if (!withinLimits(Number(r.avg), limCardOOC)) {
                 oocCards++;
                 oocCardsAll++;
+                outOfControlCardNos.push(r.cardNo);
                 const tr = document.getElementById(`cardRow_${r.cardNo}`);
                 if (tr) tr.classList.add('out-of-control');
               }
@@ -2660,13 +2662,7 @@
         metricsContainer.style.display = 'flex';
 
         // Store out-of-control card numbers for warning
-        const outOfControlCardNos = [];
-        for (const r of cardRows) {
-          const tr = document.getElementById(`cardRow_${r.cardNo}`);
-          if (tr && tr.classList.contains('out-of-control')) {
-            outOfControlCardNos.push(r.cardNo);
-          }
-        }
+        // (Already populated in the loop above: outOfControlCardNos)
 
         currentTest = {
           reportNumber: document.getElementById('reportNumber').value,
