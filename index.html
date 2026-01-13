@@ -2128,39 +2128,31 @@
       const defaultBase = 4.6;
 
       const inputs = document.querySelectorAll('#sliverTable tbody input[type="number"]');
-      const selects = document.querySelectorAll('#sliverTable tbody select');
 
-      // Assign products consecutively - distribute cards evenly across available products
-      const productsToUse = getProductOptions().filter(p => targets[p] !== null && targets[p] > 0);
-      if (productsToUse.length === 0) {
-        // If no targets entered, use all base products
-        productsToUse.push(...PRODUCT_OPTIONS_BASE);
-      }
+      // Iterate through existing card rows set up by startEntry
+      for (let i = 0; i < TOTAL_CARDS; i++) {
+        const row = cardRows[i];
+        const product = row.product; // Already set by startEntry based on assignments
 
-      // Calculate cards per product (consecutive grouping)
-      const cardsPerProduct = Math.floor(TOTAL_CARDS / productsToUse.length);
-      const remainder = TOTAL_CARDS % productsToUse.length;
+        // If no product assigned to this card, skip
+        if (!product) continue;
 
-      let cardIndex = 0;
-      for (let pIdx = 0; pIdx < productsToUse.length; pIdx++) {
-        const product = productsToUse[pIdx];
-        const cardsForThisProduct = cardsPerProduct + (pIdx < remainder ? 1 : 0);
-        const targetValue = (targets[product] !== null && targets[product] > 0) ? targets[product] : defaultBase;
+        // Get target for this product
+        const tVal = targets[product];
+        const targetValue = (tVal !== null && isFinite(tVal) && tVal > 0) ? tVal : defaultBase;
 
-        for (let j = 0; j < cardsForThisProduct && cardIndex < TOTAL_CARDS; j++) {
-          const i = cardIndex;
-          selects[i].value = product;
-          updateProduct(i + 1, product);
+        // Simulate values
+        const base = targetValue;
+        const cardBias = (Math.random() - 0.5) * (base * 0.03);
 
-          // Use target value as base for simulation
-          const base = targetValue;
-          const cardBias = (Math.random() - 0.5) * (base * 0.03);
-          for (let c = 0; c < COILERS_PER_CARD; c++) {
-            const v = base + cardBias + (Math.random() - 0.5) * (base * 0.02);
-            updateCoiler(i + 1, c + 1, v.toFixed(3));
+        for (let c = 0; c < COILERS_PER_CARD; c++) {
+          const v = base + cardBias + (Math.random() - 0.5) * (base * 0.02);
+          updateCoiler(i + 1, c + 1, v.toFixed(3));
+
+          // Update input field if it exists
+          if (inputs[i * COILERS_PER_CARD + c]) {
             inputs[i * COILERS_PER_CARD + c].value = v.toFixed(3);
           }
-          cardIndex++;
         }
       }
     }
