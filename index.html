@@ -1352,7 +1352,11 @@
         return [];
       }
       function setSavedTests(tests) {
-        try { localStorage.setItem('sliverTests_v6', JSON.stringify(tests)); } catch (_) { }
+        try {
+          localStorage.setItem('sliverTests_v6', JSON.stringify(tests));
+        } catch (e) {
+          throw e; // Bubble up error to saveTest
+        }
       }
 
       // -----------------------------
