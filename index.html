@@ -924,9 +924,11 @@
       </table>
 
       <div style="text-align:center; margin: 14px 0;">
-        <button onclick="calculateResults()">Calculate Results</button>
-        <button class="btn-save" onclick="saveTest()" id="saveBtn" style="display:none;">Save Test</button>
-        <button class="btn-print" onclick="printCurrent()" id="printCurrentBtn" style="display:none;">Print
+        <button type="button" onclick="calculateResults()">Calculate Results</button>
+        <button type="button" class="btn-save" onclick="saveTest()" id="saveBtn" style="display:none;">Save
+          Test</button>
+        <button type="button" class="btn-print" onclick="printCurrent()" id="printCurrentBtn"
+          style="display:none;">Print
           Current</button>
       </div>
 
@@ -2687,48 +2689,53 @@
     // Save / Load / Delete / Details
     // -----------------------------
     function saveTest() {
-      if (!currentTest) { alert('Please calculate results before saving.'); return; }
+      try {
+        if (!currentTest) { alert('Please calculate results before saving.'); return; }
 
-      // Check if there are out-of-control cards or coilers
-      if (currentTest.oocCardsAll > 0 || currentTest.oocCoilersAll > 0) {
-        const cardMsg = currentTest.oocCardsAll > 0 ? `${currentTest.oocCardsAll} card(s) out of range. ` : '';
-        const coilerMsg = currentTest.oocCoilersAll > 0 ? `${currentTest.oocCoilersAll} coiler reading(s) out of range.` : '';
-        const message = `Warning: ${cardMsg}${coilerMsg}\n\nDo you want to continue saving?`;
+        // Check if there are out-of-control cards or coilers
+        if ((currentTest.oocCardsAll && currentTest.oocCardsAll > 0) || (currentTest.oocCoilersAll && currentTest.oocCoilersAll > 0)) {
+          const cardMsg = currentTest.oocCardsAll > 0 ? `${currentTest.oocCardsAll} card(s) out of range. ` : '';
+          const coilerMsg = currentTest.oocCoilersAll > 0 ? `${currentTest.oocCoilersAll} coiler reading(s) out of range.` : '';
+          const message = `Warning: ${cardMsg}${coilerMsg}\n\nDo you want to continue saving?`;
 
-        if (!confirm(message)) {
-          // User clicked No - scroll to first defective card
-          if (currentTest.outOfControlCardNos && currentTest.outOfControlCardNos.length > 0) {
-            const firstDefectiveCard = currentTest.outOfControlCardNos[0];
-            const cardRow = document.getElementById(`cardRow_${firstDefectiveCard}`);
-            if (cardRow) {
-              cardRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              // Highlight briefly
-              cardRow.style.transition = 'background-color 0.3s';
-              cardRow.style.backgroundColor = '#fff3cd';
-              setTimeout(() => {
-                cardRow.style.backgroundColor = '';
-              }, 2000);
+          if (!confirm(message)) {
+            // User clicked No - scroll to first defective card
+            if (currentTest.outOfControlCardNos && currentTest.outOfControlCardNos.length > 0) {
+              const firstDefectiveCard = currentTest.outOfControlCardNos[0];
+              const cardRow = document.getElementById(`cardRow_${firstDefectiveCard}`);
+              if (cardRow) {
+                cardRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Highlight briefly
+                cardRow.style.transition = 'background-color 0.3s';
+                cardRow.style.backgroundColor = '#fff3cd';
+                setTimeout(() => {
+                  cardRow.style.backgroundColor = '';
+                }, 2000);
+              }
             }
+            return;
           }
-          return;
         }
+
+        const saved = getSavedTests();
+        saved.push(currentTest);
+        setSavedTests(saved);
+        alert('Test saved successfully.');
+        document.getElementById('saveBtn').style.display = 'none';
+
+        // Show Print Current button after saving (enabled since data is calculated)
+        document.getElementById('printCurrentBtn').style.display = 'inline-block';
+        enableSavePrintButtons();
+
+        // Mark data as saved
+        hasUnsavedData = false;
+        isTestSaved = true;
+
+        loadSavedTests();
+      } catch (e) {
+        alert("Error saving test: " + e.message);
+        console.error(e);
       }
-
-      const saved = getSavedTests();
-      saved.push(currentTest);
-      setSavedTests(saved);
-      alert('Test saved successfully.');
-      document.getElementById('saveBtn').style.display = 'none';
-
-      // Show Print Current button after saving (enabled since data is calculated)
-      document.getElementById('printCurrentBtn').style.display = 'inline-block';
-      enableSavePrintButtons();
-
-      // Mark data as saved
-      hasUnsavedData = false;
-      isTestSaved = true;
-
-      loadSavedTests();
     }
 
     function formatProductSummary(summaryByProduct) {
