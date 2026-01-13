@@ -1598,26 +1598,78 @@
       return true;
     }
 
+    function validateCardAssignments() {
+      const allCards = [];
+      const overlaps = new Set();
+
+      const productInputs = [
+        { id: 'c_qtip', name: 'Q tip' },
+        { id: 'c_triple', name: 'Triple' },
+        { id: 'c_organic', name: 'Organic' },
+        { id: 'c_special', name: 'Special' },
+        { id: 'c_custom', name: 'Custom Product' }
+      ];
+
+      productInputs.forEach(p => {
+        const el = document.getElementById(p.id);
+        if (el && el.value.trim()) {
+          const cards = parseCardRange(el.value);
+          cards.forEach(c => {
+            if (allCards.includes(c)) {
+              overlaps.add(c);
+            }
+            allCards.push(c);
+          });
+        }
+      });
+
+      if (overlaps.size > 0) {
+        const sortedOverlaps = Array.from(overlaps).sort((a, b) => a - b);
+        alert(`Error: Card(s) ${sortedOverlaps.join(', ')} are assigned to multiple products. Please correct assignments.`);
+        return false;
+      }
+      return true;
+    }
+
     function validateAndStart() {
       if (!validateInputs()) return;
+      if (!validateCardAssignments()) return;
       startEntry();
     }
 
     function validateAndSimulate() {
       if (!validateInputs()) return;
-      // Only fill targets if they are empty (preserve existing values)
-      if (!document.getElementById('t_qtip').value) {
-        document.getElementById('t_qtip').value = (4.50 + Math.random() * 0.3).toFixed(2);
-      }
-      if (!document.getElementById('t_triple').value) {
-        document.getElementById('t_triple').value = (4.50 + Math.random() * 0.3).toFixed(2);
-      }
-      if (!document.getElementById('t_organic').value) {
-        document.getElementById('t_organic').value = (4.50 + Math.random() * 0.3).toFixed(2);
-      }
-      if (!document.getElementById('t_special').value) {
-        document.getElementById('t_special').value = (4.50 + Math.random() * 0.3).toFixed(2);
-      }
+      if (!validateCardAssignments()) return;
+
+      // Identify assigned products
+      const assignments = getCardAssignments();
+      const assignedProductNames = new Set(assignments.filter(a => a).map(a => a.productName));
+
+      // Map product names to their input IDs for checking/setting defaults
+      const productMap = {
+        "Q tip": 't_qtip',
+        "Triple": 't_triple',
+        "Organic": 't_organic',
+        "Special": 't_special',
+        "Custom Product": 't_custom'
+      };
+
+      // Only fill targets for assigned products if they are empty
+      assignedProductNames.forEach(pName => {
+        const tId = productMap[pName];
+        // Custom product name might vary, but key in map is fixed base or handled? 
+        // Actually custom product logic logic:
+        if (pName === 'Custom Product' || (pName && !productMap[pName])) {
+          // It's custom, check t_custom
+          if (!document.getElementById('t_custom').value) {
+            document.getElementById('t_custom').value = (4.50 + Math.random() * 0.3).toFixed(2);
+          }
+        } else if (tId) {
+          if (!document.getElementById(tId).value) {
+            document.getElementById(tId).value = (4.50 + Math.random() * 0.3).toFixed(2);
+          }
+        }
+      });
 
       startEntry();
       simulateData();
